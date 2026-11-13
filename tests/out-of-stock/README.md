@@ -2,7 +2,7 @@
 
 ## What it checks
 
-Admin can set the seeded gift product Quantity to `0`; a shopper who tries to add it on the PDP sees the sold-out alert. Quantity is restored to `2` before the test ends.
+Admin can set the seeded gift product Quantity to `0`; a shopper who tries to add it on the PDP sees the sold-out alert. Quantity is restored to `2` before the test ends. If Quantity is already the target (e.g. a prior run left it at `0`), the admin edit is skipped — React Admin keeps Save disabled on a pristine form, which would hang Playwright’s click.
 
 Product description is optional in admin and API (seeded products have empty descriptions), so Quantity-only edits can save. Product `slugify` collapses repeated hyphens so saving the gift product keeps the seeded public slug.
 

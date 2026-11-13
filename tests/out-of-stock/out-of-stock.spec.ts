@@ -19,6 +19,9 @@ async function setGiftQuantity(
   quantity: number,
   request: APIRequestContext
 ) {
+  // React Admin disables Save while pristine; filling the same value hangs click().
+  if ((await productQuantity(request, GIFT_SLUG)) === quantity) return;
+
   await admin.goto(`${ADMIN}/#/product`);
   await expect(admin.getByText(GIFT_EN_NAME).first()).toBeVisible({
     timeout: 30_000,
@@ -29,13 +32,16 @@ async function setGiftQuantity(
   await expect(quantityInput).toBeVisible();
   await quantityInput.fill(String(quantity));
 
+  const save = admin.getByRole("button", { name: "Save" });
+  await expect(save).toBeEnabled();
+
   const savePromise = admin.waitForResponse(
     (res) =>
       res.url().includes("/api/v1/product/") &&
       res.request().method() === "PATCH" &&
       res.ok()
   );
-  await admin.getByRole("button", { name: "Save" }).click();
+  await save.click();
   await savePromise;
 
   await expect

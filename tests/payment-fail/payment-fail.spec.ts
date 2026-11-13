@@ -60,7 +60,7 @@ test("payment fail", async ({ browser, request }) => {
   await addressInputs.nth(1).fill("12");
   await addressInputs.nth(3).fill("1234567890");
   await addressDialog.getByRole("button", { name: "ثبت آدرس" }).click();
-  await expect(page.getByText("آدرس جدید با موفقیت ایجاد شد")).toBeVisible();
+  await expect(page.getByText("آدرس جدید با موفقیت ایجاد شد", { exact: true })).toBeVisible();
 
   await page.getByRole("link", { name: "تایید و تکمیل سفارش" }).click();
   await page.waitForURL(/\/payment/);
@@ -68,7 +68,7 @@ test("payment fail", async ({ browser, request }) => {
   await stubZibalReturn(page, "0");
 
   await page.getByRole("button", { name: "پرداخت" }).click();
-  await expect(page.getByText("پرداخت لغو شد")).toBeVisible({
+  await expect(page.getByText("پرداخت لغو شد", { exact: true })).toBeVisible({
     timeout: 60_000,
   });
 

@@ -53,7 +53,7 @@ test("profile orders list and detail", async ({ browser }) => {
   await addressInputs.nth(1).fill("12");
   await addressInputs.nth(3).fill("1234567890");
   await addressDialog.getByRole("button", { name: "ثبت آدرس" }).click();
-  await expect(page.getByText("آدرس جدید با موفقیت ایجاد شد")).toBeVisible();
+  await expect(page.getByText("آدرس جدید با موفقیت ایجاد شد", { exact: true })).toBeVisible();
 
   await page.getByRole("link", { name: "تایید و تکمیل سفارش" }).click();
   await page.waitForURL(/\/payment/);
@@ -66,7 +66,7 @@ test("profile orders list and detail", async ({ browser }) => {
   const orderId = new URL(page.url()).searchParams.get("orderId");
   expect(orderId).toMatch(/^\d+$/);
 
-  await expect(page.getByText("سفارش شما با موفقیت انجام شد.")).toBeVisible({
+  await expect(page.getByText("سفارش شما با موفقیت انجام شد.", { exact: true })).toBeVisible({
     timeout: 60_000,
   });
 

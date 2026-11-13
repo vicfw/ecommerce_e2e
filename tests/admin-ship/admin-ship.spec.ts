@@ -58,7 +58,7 @@ test("admin ship", async ({ browser }) => {
   await addressInputs.nth(1).fill("12");
   await addressInputs.nth(3).fill("1234567890");
   await addressDialog.getByRole("button", { name: "ثبت آدرس" }).click();
-  await expect(page.getByText("آدرس جدید با موفقیت ایجاد شد")).toBeVisible();
+  await expect(page.getByText("آدرس جدید با موفقیت ایجاد شد", { exact: true })).toBeVisible();
 
   await page.getByRole("link", { name: "تایید و تکمیل سفارش" }).click();
   await page.waitForURL(/\/payment/);
@@ -66,7 +66,7 @@ test("admin ship", async ({ browser }) => {
   await stubZibalReturn(page, "1");
 
   await page.getByRole("button", { name: "پرداخت" }).click();
-  await expect(page.getByText("سفارش شما با موفقیت انجام شد.")).toBeVisible({
+  await expect(page.getByText("سفارش شما با موفقیت انجام شد.", { exact: true })).toBeVisible({
     timeout: 60_000,
   });
 

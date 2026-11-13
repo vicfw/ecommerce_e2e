@@ -12,7 +12,7 @@ test("guest cart merges after register", async ({ browser }) => {
 
   await page.goto(`${SHOP}/products/${PRODUCT_SLUG}`);
   await page.getByRole("button", { name: "افزودن به سبد خرید" }).click();
-  await expect(page.getByText("افزوده شد به سبد خرید")).toBeVisible();
+  await expect(page.getByText("افزوده شد به سبد خرید", { exact: true })).toBeVisible();
 
   await registerAndLogin(page);
 

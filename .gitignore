@@ -1,0 +1,21 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# env
+.env
+.env*.local
+
+# misc
+.DS_Store
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
