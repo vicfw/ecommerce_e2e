@@ -1,0 +1,41 @@
+---
+description: Playwright e2e conventions for ecommerce_e2e
+alwaysApply: true
+---
+
+# Playwright e2e
+
+This app only runs Playwright scenarios against the local storefront, API, and admin.
+
+## Viewports
+
+- **Storefront / shopper flows:** mobile viewport, width under 768 so the Tailwind `md` layout is not active. Reuse the phone context size from `tests/happy-path` (390×844) rather than inventing a one-off size.
+- **Admin:** desktop viewport, at least 1280 wide. Open admin in its own browser context.
+
+## Scenarios
+
+- One scenario per folder under `tests/`.
+- One `test()` per scenario spec. Do not split a scenario into serial tests.
+- Every scenario folder has a `README.md` next to the spec. Update the README in the same change as the spec.
+
+## README sections (in order)
+
+1. What it checks
+2. Workflow
+3. Viewport
+4. Data that must already exist
+5. Rows this run writes and does not delete
+6. How to run this folder only
+
+## Bugs found while writing or running tests
+
+If a scenario fails because of incorrect app behavior (stale cache, wrong API response, missing validation, broken UI flow), **fix it in the owning project** (`ecommerce_backend`, `ecommerce_frontend`, or `ecommerce_admin`). Do not paper over it in `ecommerce_e2e`.
+
+- **Do not** add test-only workarounds: manual Redis clears, extra sleeps, skipping assertions, or duplicate production logic in helpers.
+- **Do** fix the root cause, then keep the test asserting real user-visible or API behavior.
+- Ship backend/frontend/admin fixes in the **same change** as the spec when the bug blocked the scenario.
+- Mention the product fix briefly in the scenario README if it affects what “correct” means for that test.
+
+## Do not
+
+- Add a desktop storefront test unless this rule is changed first.
