@@ -12,6 +12,11 @@ This app only runs Playwright scenarios against the local storefront, API, and a
 - **Storefront / shopper flows:** mobile viewport, width under 768 so the Tailwind `md` layout is not active. Reuse the phone context size from `tests/happy-path` (390×844) rather than inventing a one-off size.
 - **Admin:** desktop viewport, at least 1280 wide. Open admin in its own browser context.
 
+## Stock
+
+- Seeded SKUs are topped up by `global-setup.ts` before the suite runs — do not rely on leftover quantity from prior purchases.
+- Add new shared test product slugs to `E2E_PRODUCT_SLUGS` in `tests/helpers`.
+
 ## Scenarios
 
 - One scenario per folder under `tests/`.

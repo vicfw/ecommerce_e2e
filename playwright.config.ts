@@ -9,6 +9,7 @@ const adminDir = path.resolve(root, "../ecommerce_admin");
 
 export default defineConfig({
   testDir: "./tests",
+  globalSetup: "./global-setup.ts",
   timeout: 180_000,
   expect: { timeout: 30_000 },
   fullyParallel: false,

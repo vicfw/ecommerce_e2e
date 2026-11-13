@@ -93,3 +93,58 @@ export async function productQuantity(
   const body = await res.json();
   return Number(body.data.quantity);
 }
+
+/** Seeded SKUs used across scenarios — keep in stock before the suite runs. */
+export const E2E_PRODUCT_SLUGS = [
+  "aqeleh-saffron-sachet-4-grams",
+  "aqeleh-gift-saffron-3-grams-with-cardamom-10-grams-teapot-and-mortar",
+] as const;
+
+const MIN_AVAILABLE_STOCK = 50;
+
+export async function adminToken(request: APIRequestContext): Promise<string> {
+  const otpRes = await request.post(`${API}/api/v1/admin/request-otp`, {
+    data: { phoneNumber: ADMIN_PHONE },
+  });
+  expect(otpRes.ok()).toBeTruthy();
+  const otpBody = await otpRes.json();
+  const code = String(otpBody.code);
+  expect(code).toMatch(/^\d{4}$/);
+
+  const loginRes = await request.post(`${API}/api/v1/admin/login`, {
+    data: { phoneNumber: ADMIN_PHONE, code },
+  });
+  expect(loginRes.ok()).toBeTruthy();
+  const loginBody = await loginRes.json();
+  return String(loginBody.data.token);
+}
+
+export async function ensureProductInStock(
+  request: APIRequestContext,
+  slug: string,
+  minAvailable = MIN_AVAILABLE_STOCK,
+  token?: string
+): Promise<void> {
+  const productRes = await request.get(`${API}/api/v1/product/${slug}`);
+  expect(productRes.ok()).toBeTruthy();
+  const product = (await productRes.json()).data;
+  const reserved = Number(product.reservedQuantity) || 0;
+  const quantity = Number(product.quantity);
+  if (quantity - reserved >= minAvailable) return;
+
+  const auth = token ?? (await adminToken(request));
+  const res = await request.patch(`${API}/api/v1/product/${product.id}`, {
+    headers: { Authorization: `Bearer ${auth}` },
+    data: { quantity: reserved + minAvailable },
+  });
+  expect(res.ok()).toBeTruthy();
+}
+
+export async function ensureSeededProductsInStock(
+  request: APIRequestContext
+): Promise<void> {
+  const token = await adminToken(request);
+  for (const slug of E2E_PRODUCT_SLUGS) {
+    await ensureProductInStock(request, slug, MIN_AVAILABLE_STOCK, token);
+  }
+}
